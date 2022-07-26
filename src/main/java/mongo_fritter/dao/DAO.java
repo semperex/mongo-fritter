@@ -3,6 +3,7 @@ package mongo_fritter.dao;
 import mongo_fritter.model.Model;
 import org.bson.codecs.Codec;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -12,7 +13,7 @@ public interface DAO<PrimaryModelClassT extends Model<IdT>, DAOT extends DAO, Id
 
     Class<? extends DAOT> getGenericDAOClass();
 
-    default Class<? extends Codec> getCodecClass() {
+    default Collection<? extends Codec> getCodecs() {
         return null;
     }
 
