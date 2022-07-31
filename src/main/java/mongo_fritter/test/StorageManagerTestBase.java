@@ -12,14 +12,11 @@ public class StorageManagerTestBase extends AbstractFlapdoodleTestBase {
     protected void setupStorage(final String dataSourceName) throws DataSourceRegistrationStorageManagerException {
         final StorageManager storageManager;
         {
-            StorageManager.getInstance();
-
-            final DataSourceBuilder dataSourceBuilder = DataSourceBuilder.aDataSource()
+             final DataSource dataSource = DataSourceBuilder.aDataSource()
                     .withName(dataSourceName)
                     .withServerAddresses(List.of(new DataSource.ServerAddress(getMongoDBHostName(),getMongoDBPort())))
-                    .withDatabaseName(getMongoDBDatabaseName());
-
-            final DataSource dataSource = dataSourceBuilder.build();
+                    .withDatabaseName(getMongoDBDatabaseName())
+                    .build();
 
             storageManager = StorageManager.getInstance();
 
