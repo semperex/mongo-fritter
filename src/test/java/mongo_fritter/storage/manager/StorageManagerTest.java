@@ -12,10 +12,7 @@ import org.bson.codecs.EncoderContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.io.IOException;
 
@@ -96,17 +93,14 @@ public class StorageManagerTest extends StorageManagerTestBase {
     }
 
     @BeforeClass
-    public void beforeclass() throws IOException, DataSourceRegistrationStorageManagerException {
+    public void setUp() throws IOException, DataSourceRegistrationStorageManagerException {
+        createServer();
+
         final String dataSourceName = null;
         setupStorage(dataSourceName);
     }
 
-    @BeforeMethod
-    public void setUp() throws IOException {
-        createServer();
-    }
-
-    @AfterMethod
+    @AfterClass
     public void tearDown() {
         destroyServer();
     }
@@ -124,13 +118,15 @@ public class StorageManagerTest extends StorageManagerTestBase {
 
         final DAOImpl daoImpl = new DAOImpl(null, dataSourceName);
 
-        daoImpl.create(new ModelImpl(1L));
+        final long id = 1L;
 
-        final ModelImpl daoImplRetrieved = daoImpl.findById(1L);
+        daoImpl.create(new ModelImpl(id));
+
+        final ModelImpl daoImplRetrieved = daoImpl.findById(id);
 
         log.info("retrieved: {}", daoImplRetrieved);
 
-        Assert.assertEquals( daoImplRetrieved.getId(), 1L );
+        Assert.assertEquals( daoImplRetrieved.getId(), id );
 
     }
 
@@ -138,13 +134,15 @@ public class StorageManagerTest extends StorageManagerTestBase {
     public void testLoadDatabaseAndInteract2() throws DataSourceNotRegisteredStorageManagerException, DataSourceRegistrationStorageManagerException, DAOException {
         final DAOImpl daoImpl = new DAOImpl();
 
-        daoImpl.create(new ModelImpl(1L));
+        final long id = 2L;
 
-        final ModelImpl daoImplRetrieved = daoImpl.findById(1L);
+        daoImpl.create(new ModelImpl(id));
+
+        final ModelImpl daoImplRetrieved = daoImpl.findById(id);
 
         log.info("retrieved: {}", daoImplRetrieved);
 
-        Assert.assertEquals( daoImplRetrieved.getId(), 1L );
+        Assert.assertEquals( daoImplRetrieved.getId(), id );
 
     }
 
