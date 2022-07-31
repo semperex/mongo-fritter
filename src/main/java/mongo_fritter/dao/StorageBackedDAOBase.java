@@ -42,6 +42,8 @@ public abstract class StorageBackedDAOBase<T extends Model<IdT>, IdT> extends DA
         storage.addPackageName(packageName);
 
         storage.refresh();
+
+        initializeCollection();
     }
 
     public StorageBackedDAOBase(final String primaryCollectionName) throws DAOException {
