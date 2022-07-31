@@ -4,6 +4,11 @@ import mongo_fritter.dao.DAOException;
 import mongo_fritter.dao.StorageBackedDAOBase;
 import mongo_fritter.model.AbstractModel;
 import mongo_fritter.test.StorageManagerTestBase;
+import org.bson.BsonReader;
+import org.bson.BsonWriter;
+import org.bson.codecs.Codec;
+import org.bson.codecs.DecoderContext;
+import org.bson.codecs.EncoderContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
@@ -49,6 +54,45 @@ public class StorageManagerTest extends StorageManagerTestBase {
             return this.getClass();
         }
 
+    }
+
+
+    public static class DAOImpl2 extends StorageBackedDAOBase<ModelImpl,Long> {
+
+        public DAOImpl2(final String primaryCollectionName, final String dataSourceName) throws DAOException {
+            super(primaryCollectionName, dataSourceName);
+        }
+
+        public DAOImpl2() throws DAOException {
+        }
+
+        @Override
+        public Class getModelClass() {
+            return ModelImpl.class;
+        }
+
+        @Override
+        public Class getGenericDAOClass() {
+            return this.getClass();
+        }
+
+    }
+
+    public static class Model2Codec implements Codec {
+        @Override
+        public Object decode(BsonReader reader, DecoderContext decoderContext) {
+            return null;
+        }
+
+        @Override
+        public void encode(BsonWriter writer, Object value, EncoderContext encoderContext) {
+
+        }
+
+        @Override
+        public Class getEncoderClass() {
+            return null;
+        }
     }
 
     @BeforeClass
