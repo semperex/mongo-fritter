@@ -10,18 +10,15 @@ import java.util.List;
 public class StorageManagerTestBase extends AbstractFlapdoodleTestBase {
 
     protected void setupStorage(final String dataSourceName) throws DataSourceRegistrationStorageManagerException {
-        final StorageManager storageManager;
-        {
-             final DataSource dataSource = DataSourceBuilder.aDataSource()
-                    .withName(dataSourceName)
-                    .withServerAddresses(List.of(new DataSource.ServerAddress(getMongoDBHostName(),getMongoDBPort())))
-                    .withDatabaseName(getMongoDBDatabaseName())
-                    .build();
 
-            storageManager = StorageManager.getInstance();
+         final DataSource dataSource = DataSourceBuilder.aDataSource()
+                .withName(dataSourceName)
+                .withServerAddresses(List.of(new DataSource.ServerAddress(getMongoDBHostName(),getMongoDBPort())))
+                .withDatabaseName(getMongoDBDatabaseName())
+                .build();
 
-            storageManager.registerDataSource(dataSource);
-        }
+        StorageManager.getInstance().registerDataSource( dataSource );
+
     }
 
 }
