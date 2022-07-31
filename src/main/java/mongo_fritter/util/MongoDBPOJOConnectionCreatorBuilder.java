@@ -3,10 +3,15 @@ package mongo_fritter.util;
 import com.mongodb.ServerAddress;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.codecs.Codec;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public final class MongoDBPOJOConnectionCreatorBuilder {
+
+    private static final Logger log = LoggerFactory.getLogger(MongoDBPOJOConnectionCreatorBuilder.class);
+
     private List<String> pojoPackageNames = new ArrayList<>();
     private List<Codec> codecs = new ArrayList<>();
     private String databaseName = null;
@@ -25,18 +30,48 @@ public final class MongoDBPOJOConnectionCreatorBuilder {
     }
 
     public MongoDBPOJOConnectionCreatorBuilder withPojoPackageNames(final List<String> pojoPackageNames) {
-        if (!Collections.disjoint(this.pojoPackageNames, pojoPackageNames)) throw new IllegalArgumentException("duplicate");
+        for (final String existingPojoPackageName : this.pojoPackageNames) {
+            for (final String pojoPackageName : pojoPackageNames) {
+                if (StringUtils.isBlank(existingPojoPackageName)) throw new IllegalStateException();
+                if (StringUtils.isBlank(pojoPackageName)) throw new IllegalStateException();
+                if (pojoPackageName.equals(existingPojoPackageName)) {
+                    log.debug("duplicate package name (may not be a problem): {}", pojoPackageName);
+                }
+            }
+        }
+
         this.pojoPackageNames.addAll( pojoPackageNames );
         return this;
     }
 
     public MongoDBPOJOConnectionCreatorBuilder withPojoPackageName(final String pojoPackageName) {
         if ( StringUtils.isBlank( pojoPackageName ) ) throw new IllegalArgumentException();
+
+        if (pojoPackageNames.contains(pojoPackageName)) {
+            log.debug("package already added; this may not be a problem");
+        }
+
+        pojoPackageNames.add(pojoPackageName);
+
         return withPojoPackageNames(List.of(pojoPackageName));
     }
 
     public MongoDBPOJOConnectionCreatorBuilder withCodecs(final List<Codec> codecs) {
         if (!Collections.disjoint(this.codecs, codecs)) throw new IllegalArgumentException("duplicate");
+
+        for (final Codec codec : codecs) {
+            if (!this.codecs.contains(codec)) {
+
+                // check for same class
+                final Class cl = codec.getClass();
+                for (Codec codec1 : codecs) {
+                    if (cl.equals(codec1.getClass())) {
+                        log.warn("another codec already exists with the same class but was not detected as equal (this may not be a problem, or equals method may need to be implemented; most users can safely turn off this warning): ?", cl);
+                    }
+                }
+            }
+        }
+
         this.codecs.addAll( codecs );
         return this;
     }

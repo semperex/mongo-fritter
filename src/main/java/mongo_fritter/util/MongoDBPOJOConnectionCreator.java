@@ -30,12 +30,12 @@ public class MongoDBPOJOConnectionCreator {
     private String databaseName;
     private String username;
     private String password;
-    private List<String> pojoPackageNames;
-    private List<Codec> codecs;
     private List<ServerAddress> serverAddresses;
     private String replicaSetName;
-
     private String clusterName;
+
+    private List<String> pojoPackageNames;
+    private List<Codec> codecs;
 
     MongoDBPOJOConnectionCreator(final List<String> pojoPackageNames, final List<Codec> codecs, final String databaseName, final String username, final String password, final List<ServerAddress> serverAddresses, final String replicaSetName, String clusterName) {
         Objects.requireNonNull( pojoPackageNames );

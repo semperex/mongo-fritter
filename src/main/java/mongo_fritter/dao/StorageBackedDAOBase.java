@@ -3,7 +3,8 @@ package mongo_fritter.dao;
 import com.mongodb.client.MongoDatabase;
 import mongo_fritter.model.Model;
 import mongo_fritter.storage.Storage;
-import mongo_fritter.storage.StorageManager;
+import mongo_fritter.storage.manager.DataSourceNotRegisteredStorageManagerException;
+import mongo_fritter.storage.manager.StorageManager;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.codecs.Codec;
 
@@ -13,18 +14,22 @@ public abstract class StorageBackedDAOBase<T extends Model<IdT>, IdT> extends DA
 
     private static final StorageManager storageManager = StorageManager.getInstance();
 
-    private final String storageName;
+    private final String dataSourceName;
     private final Storage storage;
 
-    public StorageBackedDAOBase(final String primaryCollectionName, final String storageName) {
+    public StorageBackedDAOBase(final String primaryCollectionName, final String dataSourceName) throws DAOException {
         super(primaryCollectionName);
 
-        if (storageName != null && StringUtils.isBlank(storageName)) throw new IllegalArgumentException();
+        if (dataSourceName != null && StringUtils.isBlank(dataSourceName)) throw new IllegalArgumentException();
 
-        this.storageName = storageName;
-        this.storage = storageName != null ?
-                storageManager.getStorage( storageName ) :
-                storageManager.getStorage();
+        this.dataSourceName = dataSourceName;
+        try {
+            this.storage = dataSourceName != null ?
+                    storageManager.getStorage( dataSourceName ) :
+                    storageManager.getStorage();
+        } catch (DataSourceNotRegisteredStorageManagerException e) {
+            throw new DAOException(e);
+        }
 
         final Collection<? extends Codec> codecClasses = getCodecs();
         if (codecClasses != null) {
@@ -35,13 +40,15 @@ public abstract class StorageBackedDAOBase<T extends Model<IdT>, IdT> extends DA
 
         final String packageName = getModelClass().getPackage().getName();
         storage.addPackageName(packageName);
+
+        storage.refresh();
     }
 
-    public StorageBackedDAOBase(final String primaryCollectionName) {
+    public StorageBackedDAOBase(final String primaryCollectionName) throws DAOException {
         this(primaryCollectionName, null);
     }
 
-    public StorageBackedDAOBase() {
+    public StorageBackedDAOBase() throws DAOException {
         this(null, null);
     }
 
