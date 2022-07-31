@@ -1,12 +1,8 @@
 package mongo_fritter.storage.manager;
 
-import de.flapdoodle.os.common.io.IO;
 import mongo_fritter.dao.DAOException;
 import mongo_fritter.dao.StorageBackedDAOBase;
-import mongo_fritter.data_source.DataSource;
-import mongo_fritter.data_source.DataSourceBuilder;
 import mongo_fritter.model.AbstractModel;
-import mongo_fritter.test.AbstractFlapdoodleTestBase;
 import mongo_fritter.test.StorageManagerTestBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +13,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.util.List;
 
 import static org.testng.Assert.*;
 
