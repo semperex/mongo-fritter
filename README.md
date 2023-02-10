@@ -27,6 +27,8 @@ and more.
 
 Create the model class:
 ```java
+package com.company.models;
+
 class Pet extends AbstractModel<Long> {
 
     private String name;
@@ -49,8 +51,8 @@ class PetDAO extends DAOBase<Pet, Long> {
     public PetDAO() {
         super(
             MongoDBPOJOConnectionCreatorBuilder.builder()
-                .withPojoPackageName("com.llm.argon.model")
-                .withDatabaseName( (StringUtils.isBlank(databaseFromEnv)) ? "llm_argon" : databaseFromEnv )
+                .withPojoPackageName("com.company.models")
+                .withDatabaseName("my_database")
                 .withLocalServerAddress()
                 .build());
     }
