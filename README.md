@@ -5,7 +5,7 @@ It is a wrapper around MongoDB's Java client to simplify access to data with alm
 
 ## Key Features
 + Easy integration of models
-+ Pre-built DAO functionality (as abstract bases)
++ Pre-built, extensible DAO functionality (as abstract bases)
 + Optional auto-assignment of collection names
 + Streaming retrieval supports bigger data
 + Login credentials in (gasp) environment variables
