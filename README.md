@@ -14,7 +14,7 @@ It is a wrapper around MongoDB's Java client to simplify access to data with alm
 ## Users & Lead Link Media Sponsorship
 
 The project was originally built for applications in financial trading where it powered
-real-time solutions on time series data, active limit books and price history. 
+real-time solutions on time series data, price history and trading. 
 
 Mongo Fritter is now open sourced under MIT license with the sponsorship of user
 [Lead Link Media](https://leadlinkmedia.com/), 
