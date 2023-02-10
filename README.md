@@ -24,6 +24,12 @@ and more.
 
 ## Quick Start
 
+Set environment variables:
+```shell
+MONGODB_USERNAME=my_username
+MONGODB_PASSWORD=my_password
+```
+
 Create the model class:
 ```java
 package com.company.models;
