@@ -1,8 +1,7 @@
 # MONGO FRITTER [pre-release]
 The Mongo Fritter's purpose is to get you running fast and intuitively with Java and MongoDB.
 
-It is a wrapper around MongoDB's Java client to enable easy 
-use of almost-POJO data models and provide easy ways to access and update data.
+It is a wrapper around MongoDB's Java client to simplify access to data with almost-POJO data models.
 
 ## Key Features
 + Easy integration of models
