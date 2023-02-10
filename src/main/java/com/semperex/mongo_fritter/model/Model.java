@@ -1,4 +1,4 @@
-package mongo_fritter.model;
+package com.semperex.mongo_fritter.model;
 
 import org.bson.codecs.pojo.annotations.BsonId;
 

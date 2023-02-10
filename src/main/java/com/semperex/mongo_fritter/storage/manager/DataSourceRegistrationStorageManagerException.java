@@ -1,4 +1,4 @@
-package mongo_fritter.storage.manager;
+package com.semperex.mongo_fritter.storage.manager;
 
 public class DataSourceRegistrationStorageManagerException extends StorageManagerException {
 

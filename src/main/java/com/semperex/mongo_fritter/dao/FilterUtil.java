@@ -1,4 +1,4 @@
-package mongo_fritter.dao;
+package com.semperex.mongo_fritter.dao;
 
 import com.google.common.collect.Range;
 import com.google.common.collect.BoundType;

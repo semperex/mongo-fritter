@@ -1,8 +1,8 @@
-package mongo_fritter.storage.manager;
+package com.semperex.mongo_fritter.storage.manager;
 
-import mongo_fritter.data_source.DataSource;
-import mongo_fritter.storage.Storage;
-import mongo_fritter.storage.StorageBuilder;
+import com.semperex.mongo_fritter.storage.Storage;
+import com.semperex.mongo_fritter.data_source.DataSource;
+import com.semperex.mongo_fritter.storage.StorageBuilder;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;

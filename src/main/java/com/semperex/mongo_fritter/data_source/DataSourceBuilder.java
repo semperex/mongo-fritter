@@ -1,4 +1,4 @@
-package mongo_fritter.data_source;
+package com.semperex.mongo_fritter.data_source;
 
 import java.util.List;
 

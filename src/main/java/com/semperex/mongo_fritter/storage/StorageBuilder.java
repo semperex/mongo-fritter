@@ -1,4 +1,4 @@
-package mongo_fritter.storage;
+package com.semperex.mongo_fritter.storage;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;

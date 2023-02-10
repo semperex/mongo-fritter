@@ -1,6 +1,6 @@
-package mongo_fritter.dao;
+package com.semperex.mongo_fritter.dao;
 
-import mongo_fritter.model.Model;
+import com.semperex.mongo_fritter.model.Model;
 import org.bson.codecs.Codec;
 
 import java.util.Collection;

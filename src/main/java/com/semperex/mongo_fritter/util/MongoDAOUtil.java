@@ -1,10 +1,10 @@
-package mongo_fritter.util;
+package com.semperex.mongo_fritter.util;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import mongo_fritter.model.Model;
+import com.semperex.mongo_fritter.model.Model;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;

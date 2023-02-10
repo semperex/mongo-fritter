@@ -1,9 +1,9 @@
-package mongo_fritter.test;
+package com.semperex.mongo_fritter.test;
 
-import mongo_fritter.data_source.DataSource;
-import mongo_fritter.data_source.DataSourceBuilder;
-import mongo_fritter.storage.manager.DataSourceRegistrationStorageManagerException;
-import mongo_fritter.storage.manager.StorageManager;
+import com.semperex.mongo_fritter.data_source.DataSource;
+import com.semperex.mongo_fritter.data_source.DataSourceBuilder;
+import com.semperex.mongo_fritter.storage.manager.DataSourceRegistrationStorageManagerException;
+import com.semperex.mongo_fritter.storage.manager.StorageManager;
 
 import java.util.List;
 

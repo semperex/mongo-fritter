@@ -1,4 +1,4 @@
-package mongo_fritter.test;
+package com.semperex.mongo_fritter.test;
 
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;

@@ -1,4 +1,4 @@
-package mongo_fritter.data_source;
+package com.semperex.mongo_fritter.data_source;
 
 import org.apache.commons.lang3.StringUtils;
 

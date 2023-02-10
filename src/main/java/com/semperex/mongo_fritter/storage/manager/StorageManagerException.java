@@ -1,6 +1,6 @@
-package mongo_fritter.storage.manager;
+package com.semperex.mongo_fritter.storage.manager;
 
-import mongo_fritter.storage.StorageException;
+import com.semperex.mongo_fritter.storage.StorageException;
 
 public class StorageManagerException extends StorageException {
 

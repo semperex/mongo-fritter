@@ -1,10 +1,10 @@
-package mongo_fritter.dao;
+package com.semperex.mongo_fritter.dao;
 
 import com.mongodb.client.MongoDatabase;
-import mongo_fritter.model.Model;
-import mongo_fritter.storage.Storage;
-import mongo_fritter.storage.manager.DataSourceNotRegisteredStorageManagerException;
-import mongo_fritter.storage.manager.StorageManager;
+import com.semperex.mongo_fritter.model.Model;
+import com.semperex.mongo_fritter.storage.Storage;
+import com.semperex.mongo_fritter.storage.manager.DataSourceNotRegisteredStorageManagerException;
+import com.semperex.mongo_fritter.storage.manager.StorageManager;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.codecs.Codec;
 

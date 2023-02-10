@@ -1,4 +1,4 @@
-package mongo_fritter.util;
+package com.semperex.mongo_fritter.util;
 
 import com.mongodb.ServerAddress;
 import org.apache.commons.lang3.StringUtils;

@@ -1,7 +1,7 @@
-package mongo_fritter.dao;
+package com.semperex.mongo_fritter.dao;
 
-import mongo_fritter.model.Model;
-import mongo_fritter.util.MongoDAOUtil;
+import com.semperex.mongo_fritter.model.Model;
+import com.semperex.mongo_fritter.util.MongoDAOUtil;
 
 public abstract class DAOByteArrayIdBase<T extends Model<byte[]>> extends DAOBase<T, byte[]> {
 

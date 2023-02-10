@@ -1,4 +1,4 @@
-package mongo_fritter.storage;
+package com.semperex.mongo_fritter.storage;
 
 public class StorageException extends Exception {
     public StorageException() {

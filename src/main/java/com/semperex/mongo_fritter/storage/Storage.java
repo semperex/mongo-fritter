@@ -1,9 +1,9 @@
-package mongo_fritter.storage;
+package com.semperex.mongo_fritter.storage;
 
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
-import mongo_fritter.util.MongoDBPOJOConnectionCreator;
-import mongo_fritter.util.MongoDBPOJOConnectionCreatorBuilder;
+import com.semperex.mongo_fritter.util.MongoDBPOJOConnectionCreator;
+import com.semperex.mongo_fritter.util.MongoDBPOJOConnectionCreatorBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.codecs.Codec;
 import org.slf4j.Logger;
@@ -39,7 +39,7 @@ public class Storage
      */
     public MongoDatabase refresh() {
         final MongoDBPOJOConnectionCreator connectionCreator = connectionBuilder.build();
-        this.database = connectionCreator.connect();
+        this.database = connectionCreator.connectAndGetDatabaseOnly();
 
         return database;
     }

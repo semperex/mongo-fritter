@@ -1,4 +1,4 @@
-package mongo_fritter.dao;
+package com.semperex.mongo_fritter.dao;
 
 public class DAOException extends Exception {
 
