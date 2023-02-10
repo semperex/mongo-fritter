@@ -1,5 +1,6 @@
 package com.semperex.mongo_fritter.dao;
 
+import com.mongodb.MongoClient;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -10,6 +11,7 @@ import com.mongodb.client.model.ReplaceOptions;
 import com.mongodb.client.model.Updates;
 import com.semperex.mongo_fritter.model.Model;
 import com.semperex.mongo_fritter.util.MongoDAOUtil;
+import com.semperex.mongo_fritter.util.MongoDBPOJOConnectionCreator;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -26,10 +28,15 @@ public abstract class DAOBase<T extends Model<IdT>, IdT> implements DAO<T,DAO,Id
 
     private static final Logger log = LoggerFactory.getLogger(DAOBase.class);
 
-    protected abstract MongoDatabase getDatabase();
+    private final MongoDBPOJOConnectionCreator.MongoClientAndDatabase mongo;
+
+    protected MongoDatabase getDatabase() {
+        return mongo.getDatabase();
+    }
 
     protected ClientSession newClientSession() {
-        throw new UnsupportedOperationException("this method has not been implemented -- session not supported");
+        return mongo.getClient().startSession();
+        //throw new UnsupportedOperationException("this method has not been implemented -- session not supported");
     }
 
     private final String primaryCollectionName;
@@ -37,10 +44,22 @@ public abstract class DAOBase<T extends Model<IdT>, IdT> implements DAO<T,DAO,Id
     public DAOBase(final String primaryCollectionName) {
         if (primaryCollectionName != null && StringUtils.isBlank(primaryCollectionName)) throw new IllegalArgumentException();
         this.primaryCollectionName = primaryCollectionName;
+        this.mongo = null;
     }
 
     public DAOBase() {
-        this(null);
+        this.primaryCollectionName = null;
+        this.mongo = null;
+    }
+
+    public DAOBase(final MongoDBPOJOConnectionCreator connectionCreator, final String primaryCollectionName) {
+        if (primaryCollectionName != null && StringUtils.isBlank(primaryCollectionName)) throw new IllegalArgumentException();
+        this.primaryCollectionName = primaryCollectionName;
+        this.mongo = connectionCreator.connect();
+    }
+
+    public DAOBase(final MongoDBPOJOConnectionCreator connectionCreator) {
+        this(connectionCreator, null);
     }
 
     protected String getPrimaryCollectionName() {
@@ -81,7 +100,7 @@ public abstract class DAOBase<T extends Model<IdT>, IdT> implements DAO<T,DAO,Id
 
     @Override
     public T create() throws DAOException {
-        return create();
+        return create();  // TODO: fix this
     }
 
     @Override
@@ -156,6 +175,10 @@ public abstract class DAOBase<T extends Model<IdT>, IdT> implements DAO<T,DAO,Id
 
     protected Collection<T> findWithFilterToCollection(final Bson filter, final Integer limit) {
         return findWithFilterToCollection(filter, limit, null);
+    }
+
+    public void findByField(final String fieldName, final Object fieldValue, final Consumer<T> consumer) {
+        findWithFilter(Filters.eq(fieldName, fieldValue), consumer);
     }
 
     protected Collection<T> findWithFilterToCollection(final Bson filter) {
