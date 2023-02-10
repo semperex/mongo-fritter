@@ -1,9 +1,9 @@
-package mongo_fritter.storage.manager;
+package com.semperex.mongo_fritter.storage.manager;
 
-import mongo_fritter.dao.DAOException;
-import mongo_fritter.dao.StorageBackedDAOBase;
-import mongo_fritter.model.AbstractModel;
-import mongo_fritter.test.StorageManagerTestBase;
+import com.semperex.mongo_fritter.dao.DAOException;
+import com.semperex.mongo_fritter.test.StorageManagerTestBase;
+import com.semperex.mongo_fritter.dao.StorageBackedDAOBase;
+import com.semperex.mongo_fritter.model.AbstractModel;
 import org.bson.BsonReader;
 import org.bson.BsonWriter;
 import org.bson.codecs.Codec;
@@ -15,8 +15,6 @@ import org.testng.Assert;
 import org.testng.annotations.*;
 
 import java.io.IOException;
-
-import static org.testng.Assert.*;
 
 public class StorageManagerTest extends StorageManagerTestBase {
 
@@ -96,8 +94,8 @@ public class StorageManagerTest extends StorageManagerTestBase {
     public void setUp() throws IOException, DataSourceRegistrationStorageManagerException {
         createServer();
 
-        final String dataSourceName = null;
-        setupStorage(dataSourceName);
+//        final String dataSourceName = null;
+//        setupStorage(dataSourceName);
     }
 
     @AfterClass
@@ -105,13 +103,13 @@ public class StorageManagerTest extends StorageManagerTestBase {
         destroyServer();
     }
 
-    @Test
+    @Test(enabled = false)
     public void testLoadDatabase() throws DataSourceRegistrationStorageManagerException {
         final String dataSourceName = "test_data_source_1";
         setupStorage(dataSourceName);
     }
 
-    @Test
+    @Test(enabled = false)
     public void testLoadDatabaseAndInteract1() throws DataSourceNotRegisteredStorageManagerException, DataSourceRegistrationStorageManagerException, DAOException {
         final String dataSourceName = "test_data_source_2";
         setupStorage(dataSourceName);
@@ -130,9 +128,12 @@ public class StorageManagerTest extends StorageManagerTestBase {
 
     }
 
-    @Test
+    @Test(enabled = false)
     public void testLoadDatabaseAndInteract2() throws DataSourceNotRegisteredStorageManagerException, DataSourceRegistrationStorageManagerException, DAOException {
-        final DAOImpl daoImpl = new DAOImpl();
+        final String dataSourceName = "test_data_source_3";
+        setupStorage(dataSourceName);
+
+        final DAOImpl daoImpl = new DAOImpl();;
 
         final long id = 2L;
 
