@@ -242,7 +242,13 @@ public abstract class DAOBase<T extends Model<IdT>, IdT> implements DAO<T,DAO,Id
     }
 
     protected void findWithFilter(final Bson filter, final Consumer<T> consumer, final Integer limit, final Long skip, final Bson sort) {
-
+        findOrCountWithFilter(
+                new Op[]{Op.FIND},
+                filter,
+                consumer,
+                limit,
+                skip,
+                sort);
     }
 
     protected void findWithFilter(final Bson filter,
