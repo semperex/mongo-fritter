@@ -1,12 +1,11 @@
 # MONGO FRITTER [pre-release]
 The Mongo Fritter's purpose is to get you running fast and intuitively with Java and MongoDB.
 
-It is a wrapper around MongoDB's Java client to enable easy 
-use of almost-POJO data models and provide easy ways to access and update data.
+It is a wrapper around MongoDB's Java client to simplify access to data with almost-POJO data models.
 
 ## Key Features
 + Easy integration of models
-+ Pre-built DAO functionality (as abstract bases)
++ Pre-built, extensible DAO functionality (as abstract bases)
 + Optional auto-assignment of collection names
 + Streaming retrieval supports bigger data
 + Login credentials in (gasp) environment variables
@@ -14,8 +13,8 @@ use of almost-POJO data models and provide easy ways to access and update data.
 
 ## Users & Lead Link Media Sponsorship
 
-The project was originally built for applications in financial trading where it powered
-solutions on time series data and pricing history. 
+The project was originally built for applications in financial trading where it powered solutions 
+on time series data, price history and real-time order placement. 
 
 Mongo Fritter is now open sourced under MIT license with the sponsorship of user
 [Lead Link Media](https://leadlinkmedia.com/), 
@@ -24,6 +23,12 @@ Lead Link Media's near real-time call information on the web, internal analytics
 and more.
 
 ## Quick Start
+
+Set environment variables:
+```shell
+MONGODB_USERNAME=my_username
+MONGODB_PASSWORD=my_password
+```
 
 Create the model class:
 ```java
