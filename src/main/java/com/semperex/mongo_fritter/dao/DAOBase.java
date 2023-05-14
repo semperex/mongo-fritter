@@ -1,6 +1,5 @@
 package com.semperex.mongo_fritter.dao;
 
-import com.mongodb.MongoClient;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -9,20 +8,26 @@ import com.mongodb.client.model.CreateCollectionOptions;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
 import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.UpdateResult;
 import com.semperex.mongo_fritter.model.Model;
 import com.semperex.mongo_fritter.util.MongoDAOUtil;
 import com.semperex.mongo_fritter.util.MongoDBPOJOConnectionCreator;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.checkerframework.checker.units.qual.C;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.atomic.LongAccumulator;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public abstract class DAOBase<T extends Model<IdT>, IdT> implements DAO<T,DAO,IdT> {
 
@@ -133,9 +138,50 @@ public abstract class DAOBase<T extends Model<IdT>, IdT> implements DAO<T,DAO,Id
         return itr.next();
     }
 
-    protected void findWithFilter(final Bson filter, final Consumer<T> consumer, final Integer limit, final Bson sort) {
+
+    private enum Op {
+        FIND, COUNT
+    }
+
+    private static class CountingConsumerWrapper<T> implements Consumer<T> {
+
+        private final Consumer base;
+        private final LongAdder counter = new LongAdder();
+
+        public CountingConsumerWrapper(final Consumer base) {
+            this.base = base;
+        }
+
+        @Override
+        public void accept(final Object o) {
+            base.accept(o);
+            counter.increment();
+        }
+
+        @Override
+        public Consumer andThen(final Consumer after) {
+            return base.andThen(after);
+        }
+
+        public long count() {
+            final long x = counter.sum();
+            assert x >= 0;
+            return x;
+        }
+
+    }
+
+    private Long findOrCountWithFilter(final Op[] ops,
+                                       final Bson filter,
+                                       final Consumer<T> consumer,
+                                       final Integer limit,
+                                       final Long skip,
+                                       final Bson sort)
+    {
+        Objects.requireNonNull( ops );
         Objects.requireNonNull( filter );
-        Objects.requireNonNull( consumer );
+
+        if (ops.length == 0) throw new IllegalArgumentException();
 
         assert limit == null || limit == -1 || limit > 0;
         if (limit != null) {
@@ -143,38 +189,83 @@ public abstract class DAOBase<T extends Model<IdT>, IdT> implements DAO<T,DAO,Id
             if (limit < -1) throw new IllegalArgumentException();
         }
 
-        FindIterable<T> ts = getPrimaryCollection().find(filter);
-        if (limit != null && limit != -1) {
-            ts = ts.limit(limit);
-        }
-        if (sort != null) {
-            ts = ts.sort(sort);
+        if (skip != null) {
+            if (skip < 0) throw new IllegalArgumentException();
         }
 
-        ts.forEach( consumer );
+        if (ArrayUtils.contains(ops, Op.FIND)) {
+            Objects.requireNonNull(consumer);
+
+            FindIterable<T> ts = getPrimaryCollection().find(filter);
+            if (skip != null) {
+                if (skip.intValue() != skip) throw new UnsupportedOperationException();
+                ts = ts.skip(skip.intValue());
+            }
+            if (limit != null && limit != -1) {
+                ts = ts.limit(limit);
+            }
+            if (sort != null) {
+                ts = ts.sort(sort);
+            }
+
+            if (ArrayUtils.contains(ops, Op.COUNT)) {
+                final CountingConsumerWrapper countingConsumerWrapper = new CountingConsumerWrapper(consumer);
+                ts.forEach(countingConsumerWrapper);
+                final long count = countingConsumerWrapper.count();
+                assert count >= 0;
+                return count;
+            } else {
+                ts.forEach(consumer);
+                return null;
+            }
+        }
+
+        if (ArrayUtils.contains(ops, Op.COUNT)) {
+            final long count = getPrimaryCollection().count(filter);
+            assert count >= 0;
+            return count;
+        }
+
+        throw new IllegalStateException(new UnsupportedOperationException("no supported op found"));
+    }
+
+    protected Long countWithFilter(final Bson filter) {
+        Objects.requireNonNull(filter);
+
+        return findOrCountWithFilter(
+                new Op[]{Op.COUNT},
+                filter,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    protected void findWithFilter(final Bson filter, final Consumer<T> consumer, final Integer limit, final Long skip, final Bson sort) {
+
     }
 
     protected void findWithFilter(final Bson filter,
                                   final Consumer<T> consumer,
                                   final Integer limit)
     {
-        findWithFilter(filter, consumer, limit, null);
+        findWithFilter(filter, consumer, limit, null,null);
     }
 
     protected void findWithFilter(final Bson filter, final Consumer<T> consumer) {
         findWithFilter(filter, consumer, null);
     }
 
-    protected Collection<T> findWithFilterToCollection(final Bson filter, final Integer limit, final Bson sort) {
+    protected Collection<T> findWithFilterToCollection(final Bson filter, final Integer limit, final Long skip, final Bson sort) {
         Objects.requireNonNull( filter );
 
         final List<T> results = Collections.synchronizedList( new ArrayList<>() );
-        findWithFilter( filter, results::add, limit, sort );
+        findWithFilter( filter, results::add, limit, skip, sort );
         return results;
     }
 
-    protected Collection<T> findWithFilterToCollection(final Bson filter, final Integer limit) {
-        return findWithFilterToCollection(filter, limit, null);
+    protected Collection<T> findWithFilterToCollection(final Bson filter, final Integer limit, final Long skip) {
+        return findWithFilterToCollection(filter, limit, skip, null);
     }
 
     public void findByField(final String fieldName, final Object fieldValue, final Consumer<T> consumer) {
@@ -182,7 +273,7 @@ public abstract class DAOBase<T extends Model<IdT>, IdT> implements DAO<T,DAO,Id
     }
 
     protected Collection<T> findWithFilterToCollection(final Bson filter) {
-        return findWithFilterToCollection(filter, null);
+        return findWithFilterToCollection(filter, null, null);
     }
 
 /*    public void findByStartTimeRange(final Range<Long> timeRangeMS, final Consumer<T> consumer ) {
@@ -213,6 +304,40 @@ public abstract class DAOBase<T extends Model<IdT>, IdT> implements DAO<T,DAO,Id
 
         getPrimaryCollection().replaceOne(
                 Filters.eq(getPrimaryIdFieldName(), value.getId()), value );
+    }
+
+    @Override
+    public void updateFields(final IdT id, final Map<String, Object> fields) throws DAOException {
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(fields);
+
+        if (log.isTraceEnabled()) {
+            log.trace("id: " + id + "; fields: " +
+                    StringUtils.join(
+                            fields.entrySet().stream()
+                                .map((entry) -> "k:" + entry.getKey() + "=v:" + entry.getValue())
+                                .collect(Collectors.toUnmodifiableList()),
+                            ","));
+        }
+
+        if (fields.size() == 0) throw new DAOException("nothing to update");
+
+        final List<Bson> updates = new ArrayList<>(8);
+        fields.forEach((k,v) -> {
+            updates.add(Updates.set(k, v));
+        });
+
+        if (updates.size() == 0) {
+            throw new IllegalStateException(new DAOException("nothing to update"));
+        }
+
+        final UpdateResult updateResult =
+            getPrimaryCollection().updateOne(
+                    Filters.eq(getPrimaryIdFieldName(), id),
+                    updates.size() == 1 ? updates.get(0) : Updates.combine(updates)
+            );
+
+        log.trace("modified count: " + updateResult.getModifiedCount());
     }
 
     @Override
@@ -300,7 +425,7 @@ public abstract class DAOBase<T extends Model<IdT>, IdT> implements DAO<T,DAO,Id
 
         // final long existingCount = getPrimaryCollection().countDocuments(uniqueFilter);
 
-        final Collection<T> existing = findWithFilterToCollection(uniqueFilter, null);
+        final Collection<T> existing = findWithFilterToCollection(uniqueFilter, null, null);
         final long existingCount = existing.size();
 
         if (existingCount > 1) throw new DAOException("existing count greater than 1 indicating something has gone wrong as the filter is supposed to be unique");
