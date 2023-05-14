@@ -5,6 +5,7 @@ import org.bson.codecs.Codec;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public interface DAO<PrimaryModelClassT extends Model<IdT>, DAOT extends DAO, IdT> {
@@ -32,6 +33,8 @@ public interface DAO<PrimaryModelClassT extends Model<IdT>, DAOT extends DAO, Id
     PrimaryModelClassT findById(IdT id) throws DAOException;
 
     void deleteById(IdT id) throws DAOException;
+
+    void updateFields(IdT id, Map<String, Object> fields) throws DAOException;
 
     PrimaryModelClassT createOrUpdate(PrimaryModelClassT value) throws DAOException;
 
