@@ -392,13 +392,22 @@ public abstract class DAOBase<T extends Model<IdT>, IdT> implements DAO<T,DAO,Id
 
     private Object getFieldValue(final Class cls, final T instance, final String fieldName) throws DAOException {
         final Method getMethod = getPOJOGetMethodFromFieldName(cls, fieldName, false);
-        final Object fieldValue;
+        Object fieldValue;
         try {
             fieldValue = getMethod.invoke(instance);
         } catch (IllegalAccessException e) {
             throw new DAOException(e);
         } catch (InvocationTargetException e) {
             throw new DAOException(e);
+        }
+        if (cls.isPrimitive()) {
+            if (cls.equals(boolean.class)) fieldValue = Boolean.valueOf((boolean)fieldValue);
+            else if (cls.equals(byte.class)) fieldValue = Byte.valueOf((byte)fieldValue);
+            else if (cls.equals(short.class)) fieldValue = Short.valueOf((short)fieldValue);
+            else if (cls.equals(int.class)) fieldValue = Integer.valueOf((int)fieldValue);
+            else if (cls.equals(long.class)) fieldValue = Long.valueOf((long)fieldValue);
+            else if (cls.equals(float.class)) fieldValue = Float.valueOf((float)fieldValue);
+            else if (cls.equals(double.class)) fieldValue = Double.valueOf((double)fieldValue);
         }
         return fieldValue;
     }
@@ -412,7 +421,7 @@ public abstract class DAOBase<T extends Model<IdT>, IdT> implements DAO<T,DAO,Id
             return createOrIgnore(value);
         }
 
-        final List<Bson> updates = List.of();
+        final List<Bson> updates = new ArrayList<>();
 
         for (final String updateFieldName : updateFieldNames) {
             if (StringUtils.isBlank(updateFieldName)) throw new DAOException("invalid field name -- was blank");
@@ -421,7 +430,13 @@ public abstract class DAOBase<T extends Model<IdT>, IdT> implements DAO<T,DAO,Id
             final Object updateFieldValue = getFieldValue(value.getClass(), value, updateFieldName);
             if (updateFieldValue == null) log.warn("update field value was null");
             log.trace("field name: {} and field value: {}", updateFieldName, updateFieldValue);
-            updates.add(Updates.set(updateFieldName, updateFieldValue));
+            try {
+                updates.add(Updates.set(updateFieldName, updateFieldValue));
+                log.trace("added updates to pre-query structure");
+            } catch (Exception e) {
+                log.error("error", e, e);
+                throw new RuntimeException(e);
+            }
         }
 
         final Bson uniqueFilter = Filters.eq(getPrimaryIdFieldName(), value.getId());
@@ -442,7 +457,7 @@ public abstract class DAOBase<T extends Model<IdT>, IdT> implements DAO<T,DAO,Id
             getPrimaryCollection().insertOne(session, value);
         } else if (existingCount == 1) {
             if (filter == null || filter.apply(existing.stream().findFirst().get())) {
-                log.trace("updating one");
+                log.trace("updating one with updates: {}", updates);
                 getPrimaryCollection().updateOne(
                         session,
                         uniqueFilter,
