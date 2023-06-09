@@ -6,7 +6,7 @@
 
     <groupId>com.semperex</groupId>
     <artifactId>semperex-mongo-fritter</artifactId>
-    <version>0.1.2-r32</version>
+    <version>0.1.2-r38</version>
 
     <properties>
         <maven.compiler.source>14</maven.compiler.source>
