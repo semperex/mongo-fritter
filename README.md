@@ -120,17 +120,13 @@ petDAO.findByField("name", "sparky", result -> System.out.println(result.getName
 Optionally add an index for more speed:
 ```java
 ...
-import com.mongodb.client.model.Indexes;
-...
 class PetDAO extends DAOBase<Pet, Long> {
 ...
     public PetDAO() {
         super( ... );
         ...
-        if (DAOUtil.getIndex(getPrimaryCollection(),"name") == null) {
-            getPrimaryCollection().createIndex(Indexes.ascending("name"));
-        }
+        createIndex("name");  // creates an index IF it does not already exist
+        ...
     }
-
     ...
 }
