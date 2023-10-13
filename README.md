@@ -111,6 +111,7 @@ class PetDAO extends DAOBase<Pet, Long> {
     }
     ...
 }
+```
 
 Instantiate the DAO:
 ```java
