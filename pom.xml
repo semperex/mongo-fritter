@@ -6,7 +6,7 @@
 
     <groupId>com.semperex</groupId>
     <artifactId>semperex-mongo-fritter</artifactId>
-    <version>0.1.2-r38</version>
+    <version>0.1.2-r39</version>
 
     <properties>
         <maven.compiler.source>14</maven.compiler.source>
@@ -68,7 +68,7 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <version>3.12.12</version>
+            <version>3.12.14</version>
         </dependency>
 
         <dependency>
