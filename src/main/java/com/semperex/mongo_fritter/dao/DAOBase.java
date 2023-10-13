@@ -100,7 +100,7 @@ public abstract class DAOBase<T extends Model<IdT>, IdT> implements DAO<T,DAO,Id
         return getModelClass().getDeclaredConstructor().newInstance();
     }
 
-    protected boolean createIndex(final Bson fieldBson, final boolean overwrite, final String indexName) throws DAOException {
+    private boolean createIndex(final Bson fieldBson, final boolean overwrite, final String indexName) throws DAOException {
         final MongoCollection collection = getPrimaryCollection();
         if (MongoDAOUtil.getIndex(collection, indexName) != null) {
             if (overwrite) {
@@ -113,12 +113,19 @@ public abstract class DAOBase<T extends Model<IdT>, IdT> implements DAO<T,DAO,Id
         return true;
     }
 
-    public boolean createIndex(final String fieldName, final boolean overwrite) throws DAOException {
+    protected boolean createIndex(final String fieldName, final boolean overwrite) throws DAOException {
         final String indexName = fieldName;
         return createIndex(Indexes.ascending(fieldName), overwrite, indexName);
     }
 
-    public boolean createIndex(final String fieldName) throws DAOException {
+    /**
+     * Creates an ascending index if it does not already exist.
+     *
+     * @param fieldName
+     * @return
+     * @throws DAOException
+     */
+    protected boolean createIndex(final String fieldName) throws DAOException {
         return createIndex(fieldName, false);
     }
 
