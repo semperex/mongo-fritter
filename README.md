@@ -64,14 +64,15 @@ class PetDAO extends DAOBase<Pet, Long> {
 }
 ```
 
-Or create the DAO class with a connection to local or MongoDB Atlas service depending on environment and configurable database name:
+Or create the DAO class with a connection to local or MongoDB Atlas service depending on environment and configurable database name.  (You may want to build your own reusable base class with this logic.):
 ```java
 
 public enum Environment { DEVELOPMENT, PRODUCTION };
 
 ...
 
-import org.apache.commons.lang3.StringUtils;  // from Maven package: https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+// from Maven package: https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+import org.apache.commons.lang3.StringUtils;
 
 class PetDAO extends DAOBase<Pet, Long> {
     private static final Environment environment = Enviroment.PRODUCTION;  // or yourCodeToGetEnvironment();
