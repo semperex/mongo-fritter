@@ -34,6 +34,8 @@ Create the model class:
 ```java
 package com.company.models;
 
+import com.semperex.mongo_fritter.model.AbstractModel;
+
 class Pet extends AbstractModel<Long> {
 
     private String name;
@@ -52,6 +54,8 @@ class Pet extends AbstractModel<Long> {
 
 Create the DAO class with a connection to local MongoDB server:
 ```java
+import com.semperex.mongo_fritter.dao.DAOBase;
+
 class PetDAO extends DAOBase<Pet, Long> {
     public PetDAO() {
         super(
@@ -70,6 +74,8 @@ Or create the DAO class with a connection to local or MongoDB Atlas service depe
 public enum Environment { DEVELOPMENT, PRODUCTION };
 
 ...
+
+com.semperex.mongo_fritter.dao.DAOBase;
 
 // from Maven package: https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
 import org.apache.commons.lang3.StringUtils;
