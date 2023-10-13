@@ -123,7 +123,7 @@ Optionally add an index for more speed:
 class PetDAO extends DAOBase<Pet, Long> {
 ...
     public PetDAO() {
-        super( ... )
+        super( ... );
         ...
         if (DAOUtil.getIndex(getPrimaryCollection(),"name") == null) {
             getPrimaryCollection().createIndex(Indexes.ascending("name"));
