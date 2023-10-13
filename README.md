@@ -145,6 +145,7 @@ class PetDAO extends DAOBase<Pet, Long> {
     }
     ...
 }
+```
 
 ## What's "Nearly" POJO?
 
