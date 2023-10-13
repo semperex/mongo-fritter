@@ -71,6 +71,8 @@ public enum Environment { DEVELOPMENT, PRODUCTION };
 
 ...
 
+import org.apache.commons.lang3.StringUtils;  // from Maven package: https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+
 class PetDAO extends DAOBase<Pet, Long> {
     private static final Environment environment = Enviroment.PRODUCTION;  // or yourCodeToGetEnvironment();
     private static final String databaseFromEnv = System.getenv("MONGODB_DATABASE");
