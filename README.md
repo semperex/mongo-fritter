@@ -75,7 +75,7 @@ public enum Environment { DEVELOPMENT, PRODUCTION };
 
 ...
 
-com.semperex.mongo_fritter.dao.DAOBase;
+import com.semperex.mongo_fritter.dao.DAOBase;
 
 // from Maven package: https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
 import org.apache.commons.lang3.StringUtils;
