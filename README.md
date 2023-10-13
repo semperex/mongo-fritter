@@ -50,7 +50,7 @@ class Pet extends AbstractModel<Long> {
 }
 ```
 
-Create the DAO class:
+Create the DAO class with a connection to local MongoDB server:
 ```java
 class PetDAO extends DAOBase<Pet, Long> {
     public PetDAO() {
@@ -60,6 +60,36 @@ class PetDAO extends DAOBase<Pet, Long> {
                 .withDatabaseName("my_database")
                 .withLocalServerAddress()
                 .build());
+    }
+}
+```
+
+Or create the DAO class with a connection to local or MongoDB Atlas service depending on environement:
+```java
+
+public enum Environment { DEVELOPMENT, PRODUCTION };
+
+...
+
+class PetDAO extends DAOBase<Pet, Long> {
+    private static final Environment environment = Enviroment.PRODUCTION;  // or yourCodeToGetEnvironment();
+    private static final String databaseFromEnv = System.getenv("MONGODB_DATABASE");
+
+    public PetDAO() {
+        super(
+            switch ( environment ) {
+                case DEVELOPMENT -> MongoDBPOJOConnectionCreatorBuilder.builder() // Connect to local
+                        .withPojoPackageName("com.company.models")
+                        .withDatabaseName( (StringUtils.isBlank(databaseFromEnv)) ? "my_database" : databaseFromEnv )
+                        .withLocalServerAddress()
+                        .build();
+                case PRODUCTION -> MongoDBPOJOConnectionCreatorBuilder.builder() // Connect to MongoDB Atlas
+                        .withPojoPackageName("com.llm.argon.model")
+                        .withDatabaseName( (StringUtils.isBlank(databaseFromEnv)) ? "my_database" : databaseFromEnv )
+                        .withClusterName("cluster-name.mongodb.net")
+                        .build();
+            };
+        );
     }
 }
 ```
