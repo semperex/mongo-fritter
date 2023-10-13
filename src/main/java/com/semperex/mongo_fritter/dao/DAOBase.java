@@ -4,10 +4,7 @@ import com.mongodb.client.ClientSession;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.CreateCollectionOptions;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.ReplaceOptions;
-import com.mongodb.client.model.Updates;
+import com.mongodb.client.model.*;
 import com.mongodb.client.result.UpdateResult;
 import com.semperex.mongo_fritter.model.Model;
 import com.semperex.mongo_fritter.util.MongoDAOUtil;
@@ -101,6 +98,28 @@ public abstract class DAOBase<T extends Model<IdT>, IdT> implements DAO<T,DAO,Id
 
     protected T newPrimaryModelInstance() throws Exception {
         return getModelClass().getDeclaredConstructor().newInstance();
+    }
+
+    protected boolean createIndex(final Bson fieldBson, final boolean overwrite, final String indexName) throws DAOException {
+        final MongoCollection collection = getPrimaryCollection();
+        if (MongoDAOUtil.getIndex(collection, indexName) != null) {
+            if (overwrite) {
+                collection.dropIndex(indexName);
+            } else {
+                return false;
+            }
+        }
+        collection.createIndex(fieldBson);
+        return true;
+    }
+
+    public boolean createIndex(final String fieldName, final boolean overwrite) throws DAOException {
+        final String indexName = fieldName;
+        return createIndex(Indexes.ascending(fieldName), overwrite, indexName);
+    }
+
+    public boolean createIndex(final String fieldName) throws DAOException {
+        return createIndex(fieldName, false);
     }
 
     @Override
