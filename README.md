@@ -88,7 +88,7 @@ class PetDAO extends DAOBase<Pet, Long> {
                         .withDatabaseName( (StringUtils.isBlank(databaseFromEnv)) ? "my_database" : databaseFromEnv )
                         .withClusterName("cluster-name.mongodb.net")
                         .build();
-            };
+            }
         );
     }
 }
