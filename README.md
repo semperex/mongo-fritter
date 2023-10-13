@@ -64,7 +64,7 @@ class PetDAO extends DAOBase<Pet, Long> {
 }
 ```
 
-Or create the DAO class with a connection to local or MongoDB Atlas service depending on environment and configurable database name.  (You may want to build your own reusable base class with this logic.):
+Or create the DAO class with a connection to local or MongoDB Atlas service depending on environment and also make the database name configurable.  (You may want to build your own reusable base class with this logic.):
 ```java
 
 public enum Environment { DEVELOPMENT, PRODUCTION };
