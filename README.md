@@ -117,7 +117,7 @@ Find sparky:
 petDAO.findByField("name", "sparky", result -> System.out.println(result.getName()));
 ```
 
-Add an index for more speed:
+Optionally add an index for more speed:
 ```java
 ...
 class PetDAO extends DAOBase<Pet, Long> {
