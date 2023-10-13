@@ -75,20 +75,29 @@ public enum Environment { DEVELOPMENT, PRODUCTION };
 import org.apache.commons.lang3.StringUtils;
 
 class PetDAO extends DAOBase<Pet, Long> {
-    private static final Environment environment = Enviroment.PRODUCTION;  // or yourCodeToGetEnvironment();
+
+    // your code to get environment here
+    private static final Environment environment = Enviroment.PRODUCTION;
+  
     private static final String databaseFromEnv = System.getenv("MONGODB_DATABASE");
 
     public PetDAO() {
         super(
             switch ( environment ) {
-                case DEVELOPMENT -> MongoDBPOJOConnectionCreatorBuilder.builder() // Connect to local
+
+                // Connect to local
+                case DEVELOPMENT -> MongoDBPOJOConnectionCreatorBuilder.builder()
                         .withPojoPackageName("com.company.models")
-                        .withDatabaseName( (StringUtils.isBlank(databaseFromEnv)) ? "my_database" : databaseFromEnv )
+                        .withDatabaseName( (StringUtils.isBlank(databaseFromEnv)) ?
+                                             "my_database" : databaseFromEnv )
                         .withLocalServerAddress()
                         .build();
-                case PRODUCTION -> MongoDBPOJOConnectionCreatorBuilder.builder() // Connect to MongoDB Atlas
+
+                // Connect to MongoDB Atlas
+                case PRODUCTION -> MongoDBPOJOConnectionCreatorBuilder.builder()
                         .withPojoPackageName("com.company.models")
-                        .withDatabaseName( (StringUtils.isBlank(databaseFromEnv)) ? "my_database" : databaseFromEnv )
+                        .withDatabaseName( (StringUtils.isBlank(databaseFromEnv)) ?
+                                             "my_database" : databaseFromEnv )
                         .withClusterName("cluster-name.mongodb.net")
                         .build();
             }
