@@ -84,7 +84,7 @@ class PetDAO extends DAOBase<Pet, Long> {
                         .withLocalServerAddress()
                         .build();
                 case PRODUCTION -> MongoDBPOJOConnectionCreatorBuilder.builder() // Connect to MongoDB Atlas
-                        .withPojoPackageName("com.llm.argon.model")
+                        .withPojoPackageName("com.company.models")
                         .withDatabaseName( (StringUtils.isBlank(databaseFromEnv)) ? "my_database" : databaseFromEnv )
                         .withClusterName("cluster-name.mongodb.net")
                         .build();
