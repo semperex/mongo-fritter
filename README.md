@@ -22,7 +22,7 @@ an auto-glass marketing company.  Mongo Fritter is behind solutions that power
 Lead Link Media's near real-time call information on the web, internal analytics
 and more.
 
-## Getting Start
+## Getting Started
 
 Set environment variables:
 ```shell
