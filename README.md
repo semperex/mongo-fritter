@@ -94,8 +94,8 @@ class PetDAO extends DAOBase<Pet, Long> {
             }
         );
     }
+    ...
 }
-```
 
 Instantiate the DAO:
 ```java
@@ -116,3 +116,19 @@ Find sparky:
 ```java
 petDAO.findByField("name", "sparky", result -> System.out.println(result.getName()));
 ```
+
+Add an index for more speed:
+```java
+...
+class PetDAO extends DAOBase<Pet, Long> {
+...
+    public PetDAO() {
+        super( ... )
+        ...
+        if (DAOUtil.getIndex(getPrimaryCollection(),"name") == null) {
+            getPrimaryCollection().createIndex(Indexes.ascending("name"));
+        }
+    }
+
+    ...
+}
