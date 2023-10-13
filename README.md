@@ -145,3 +145,7 @@ class PetDAO extends DAOBase<Pet, Long> {
     }
     ...
 }
+
+## What's "Nearly" POJO?
+
+Currently, models need to extend AbstractModel.  Otherwise it is POJO.  Will probably remove this requirement with some reflection magic in the future, and then we can say "all" POJO.
